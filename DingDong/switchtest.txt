@@ -1,0 +1,63 @@
+#include <SoftwareSerial.h>
+#include <SparkFunESP8266WiFi.h>
+
+#define NETWORK_NAME "HSWConsulting24"
+#define NETWORK_PASSWORD "RoelofWasHier"
+
+#define LED_PIN 13
+#define BUTTON_PIN 2
+
+int buttonState = 0;
+String request = "http://km4.mobidapt.com/switches?userid=jelle&switchid=switch1&value=off";
+
+void setup() {
+  Serial.begin(9600);
+
+  setupESP8266();
+
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT);
+}
+
+void loop() {
+  buttonState = digitalRead(BUTTON_PIN);
+
+  if (buttonState == HIGH) {
+    Serial.println("on");
+    request = "http://km4.mobidapt.com/switches?userid=jelle&switchid=switch1&value=on";
+
+  } else {
+    Serial.println("off");
+    request = "http://km4.mobidapt.com/switches?userid=jelle&switchid=switch1&value=off";
+
+  }
+  
+  String response;
+  
+
+  int result = sendRequest("km4.mobidapt.com", request, response);
+  if (result < 0) {
+    Serial.println(F("Failed to connect to server."));
+  } else {
+    Serial.println(response);
+  }
+  
+  // zoek in de response naar 't woord 'off'
+  //if (response.indexOf("off") >= 0) {
+    //digitalWrite(LED_PIN, LOW);
+  //} else { // geen 'off'? dan blijkbaar 'on'...
+  //  digitalWrite(LED_PIN, HIGH);
+  //}
+
+  delay(500);
+  
+}
+
+String getBody(const String& response) {
+  int bodyStart = response.indexOf("\r\n\r\n");
+  int bodyEnd = response.indexOf('\n', bodyStart + 4);
+  String resp =  response.substring(bodyStart + 4, bodyEnd);
+  resp.trim();
+
+  return resp;
+}
