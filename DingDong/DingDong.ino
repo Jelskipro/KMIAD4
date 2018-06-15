@@ -11,17 +11,22 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 int buttonState = 0;
 int pressed = 0;
+
+//De request voor de smiley opvragen
 String request = "/~jelle.hoogenberg/IAD4/getsmiley?id=1&password=wachtwoord123";
+//De request voor als je aanbelt. 
 String aanbelRequest = "/~jelle.hoogenberg/IAD4/belt.php?PHPSESSID=v9f0mjjv88hb8ie6r10p25cqv2&aanbeller='gerrit'";
+//Huidige smiley
 String currentSmiley;
 
 void setup() {
   Serial.begin(9600);
 
   setupESP8266();
-
+  
   pinMode(BUTTON_PIN, INPUT);
 
+  //Set de LCD OP
   lcd.begin(16, 2);
   lcd.print("Starting DingDong...");
 }
@@ -29,16 +34,19 @@ void setup() {
 void loop() {
   String aanbelResponse;
   int aanbelResult;
-  
+
   buttonState = digitalRead(BUTTON_PIN);
 
+  //Maak de aanbel response leeg zodat hij sneller print.
   aanbelResponse = "";
 
+  //Als je op de knop drukt (aanbelt)
   if (buttonState == HIGH)
   {
      Serial.println("pressed");
      if(pressed == 0)
      {
+        //Voer het aanbel request uit
         aanbelResult = sendRequest("studenthome.hku.nl", aanbelRequest, aanbelResponse);
         pressed = 1;
      }
@@ -51,9 +59,12 @@ void loop() {
   String response;
   int result;
 
+  //Maak de response leeg zodat hij sneller print.
   response = "";
+  //Voer php script uit dat de smiley opvraagt.
   result = sendRequest("studenthome.hku.nl", request, response);
-  
+
+  //Kijk welke smiley voorkomt in de body.
   if (response.indexOf(":)") >= 0) {
      currentSmiley = ":)";
   } 
@@ -71,41 +82,16 @@ void loop() {
   Serial.println("Current smiley:");
   Serial.println(currentSmiley);
 
+  //Clear de lcd zodat hij maar 1 tegelijk laat zien
   lcd.clear();
+  //Laat de huidige smiley zien op de lcd
   lcd.print(currentSmiley);
   
   Serial.println(response);
   delay(50);
   
-  //if (result < 0) {
-    //Serial.println(F("Failed to connect to server."));
-  //} else {
-    //smileyState = getBody(response).toInt();
-    
-    //Serial.print("response:");
-    //Serial.println(response);
-
-    //Serial.print("smileyState:");
-    //Serial.println(smileyState);
-
-    //Serial.print("result:");
-    //Serial.println(result);
-  //}
-    
-
-  
-  //delay(500);
 
 }
-
-//String getBody(const String& response) {
-  //int bodyStart = response.indexOf("\r\n\r\n");
-  //int bodyEnd = response.indexOf('\n', bodyStart + 4);
-  //response =  response.substring(bodyStart + 4, bodyEnd);
-  //response.trim();
-
-  //return response;
-//}
 
 
 
