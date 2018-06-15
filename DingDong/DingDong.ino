@@ -2,8 +2,8 @@
 #include <SparkFunESP8266WiFi.h>
 #include <LiquidCrystal.h>
 
-#define NETWORK_NAME "HSWConsulting24"
-#define NETWORK_PASSWORD "RoelofWasHier"
+#define NETWORK_NAME "WIFInaamhier"
+#define NETWORK_PASSWORD "WIFIwachtwoordhier"
 
 #define BUTTON_PIN 13
 
@@ -12,7 +12,7 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 int buttonState = 0;
 int pressed = 0;
 String request = "/~jelle.hoogenberg/IAD4/getsmiley?id=1&password=wachtwoord123";
-String aanbelRequest = "/~jelle.hoogenberg/IAD4/belt.php?PHPSESSID=bpbobptv5f0ueh884n19gj8dk1&aanbeller='gerrit'";
+String aanbelRequest = "/~jelle.hoogenberg/IAD4/belt.php?PHPSESSID=v9f0mjjv88hb8ie6r10p25cqv2&aanbeller='gerrit'";
 String currentSmiley;
 
 void setup() {
@@ -75,7 +75,7 @@ void loop() {
   lcd.print(currentSmiley);
   
   Serial.println(response);
-  delay(100);
+  delay(50);
   
   //if (result < 0) {
     //Serial.println(F("Failed to connect to server."));
